@@ -8,17 +8,17 @@ namespace Zapotlan.PortalWeb.Admin.Core.Entities
         public Guid AdministracionID { get; set; }
 
         public int Indice { get; set; }
-        public AyuntamientoIntegranteType Tipo { get; set; }
+        public AyuntamientoIntegranteType Tipo { get; set; } = AyuntamientoIntegranteType.Ninguno;
         public string FraccionPolitica { get; set; } = string.Empty;
         public DateTime FechaInicio { get; set; }
         public DateTime FechaTermino { get; set; }
-        public EstatusType Estatus { get; set; }
+        public EstatusType Estatus { get; set; } = EstatusType.Ninguno;
 
-        // RELACIONES
+        // RELATIONS
 
-        public virtual Administracion Administracion { get; set; } = new Administracion();
-        public virtual Empleado Empleado { get; set; }
+        public virtual Administracion? Administracion { get; set; }
+        public virtual Empleado? Empleado { get; set; }
 
-        public virtual ICollection<ComisionIntegrante> ComisionesIntegrantes { get; set; }
+        public virtual ICollection<ComisionIntegrante>? ComisionesIntegrantes { get; set; }
     }
 }
