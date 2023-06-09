@@ -9,7 +9,7 @@
     }
 
     public enum PropietarioType
-    {
+    {   
         Ninguno,
         Administraciones,
         Ayuntamientos,

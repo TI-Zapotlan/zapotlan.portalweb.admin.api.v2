@@ -16,9 +16,9 @@ namespace Zapotlan.PortalWeb.Admin.Core.Entities
 
         // RELATIONS
 
-        public virtual Administracion? Administracion { get; set; }
-        public virtual Empleado? Empleado { get; set; }
+        //public virtual Administracion? Administracion { get; set; }
+        //public virtual Empleado? Empleado { get; set; }
 
-        public virtual ICollection<ComisionIntegrante>? ComisionesIntegrantes { get; set; }
+        //public virtual ICollection<ComisionIntegrante>? ComisionesIntegrantes { get; set; }
     }
 }

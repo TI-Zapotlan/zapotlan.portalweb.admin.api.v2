@@ -1,4 +1,5 @@
-﻿using Zapotlan.PortalWeb.Admin.Core.Enumerations;
+﻿using System.Text.Json.Serialization;
+using Zapotlan.PortalWeb.Admin.Core.Enumerations;
 
 namespace Zapotlan.PortalWeb.Admin.Core.Entities
 {
@@ -7,6 +8,8 @@ namespace Zapotlan.PortalWeb.Admin.Core.Entities
         public string Periodo { get; set; } = string.Empty;
         public DateTime FechaInicio { get; set; }
         public DateTime FechaTermino { get; set; }
+
+        [JsonConverter(typeof(JsonStringEnumConverter))]
         public EstatusType Estatus { get; set; } = EstatusType.Ninguno;
 
         // RELATIONS
