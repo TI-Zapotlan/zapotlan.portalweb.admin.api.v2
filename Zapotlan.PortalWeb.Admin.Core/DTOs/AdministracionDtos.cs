@@ -3,7 +3,7 @@ using Zapotlan.PortalWeb.Admin.Core.Enumerations;
 
 namespace Zapotlan.PortalWeb.Admin.Core.DTOs
 {
-    public class AdministracionListDto
+    public class AdministracionItemListDto
     {
         public Guid ID { get; set; }
         public string Periodo { get; set; } = string.Empty;
@@ -16,7 +16,7 @@ namespace Zapotlan.PortalWeb.Admin.Core.DTOs
         public int NoIntegrantes { get; set; } = 0;
     }
 
-    public class AdministracionItemDto {
+    public class AdministracionItemDetailDto {
         public Guid ID { get; set; }
         public string Periodo { get; set; } = string.Empty;
         public DateTime FechaInicio { get; set; }
@@ -25,7 +25,7 @@ namespace Zapotlan.PortalWeb.Admin.Core.DTOs
         public string UsuarioActualizacion { get; set; } = string.Empty;
         public DateTime FechaActualizacion { get; set; }
 
-        public ICollection<AyuntamientoIntegrante>? Integrantes { get; set; }
+        public IEnumerable<AyuntamientoIntegrante>? Integrantes { get; set; }
     }
 
     public class AdministracionAddDto

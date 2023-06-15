@@ -1,14 +1,17 @@
-﻿using Zapotlan.PortalWeb.Admin.Core.Enumerations;
+﻿using System.Text.Json.Serialization;
+using Zapotlan.PortalWeb.Admin.Core.Enumerations;
 
 namespace Zapotlan.PortalWeb.Admin.Core.Entities
 {
     public class Persona : BaseEntity
     {
-        public string Prefijo { get; set; } = string.Empty;
-        public string Nombres { get; set; } = string.Empty;
-        public string PrimerApellido { get; set; } = string.Empty;
-        public string SegundoApellido { get; set; } = string.Empty;
+        public string? Prefijo { get; set; }
+        public string? Nombres { get; set; }
+        public string? PrimerApellido { get; set; }
+        public string? SegundoApellido { get; set; }
         public DateTime? FechaNacimiento { get; set; }
+
+        [JsonConverter(typeof(JsonStringEnumConverter))]
         public PersonaEstadoVidaType EstadoVida { get; set; }
     }
 }

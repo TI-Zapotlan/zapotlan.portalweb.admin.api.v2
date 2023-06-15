@@ -22,7 +22,6 @@ namespace Zapotlan.PortalWeb.Admin.Core.Entities
         public virtual Persona? Persona { get; set; }
         public virtual Area? AreaJefe { get; set; }
         public virtual Area? Area { get; set; }
-        public virtual AyuntamientoIntegrante? AyuntamientoIntegrante { get; set; }
         public virtual Empleado? Jefe { get; set; }
                
         public virtual ICollection<Empleado>? Empleados { get; set; }

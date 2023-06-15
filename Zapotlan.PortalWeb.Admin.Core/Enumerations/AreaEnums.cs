@@ -12,4 +12,17 @@
         Coordinacion,
         Secretaria
     }
+
+    public enum AreaOrderFilterType
+    { 
+        Ninguno,
+        Clave,
+        Nombre,
+        NombreCorto,
+        FechaActualizacion,
+        ClaveDesc,
+        NombreDesc,
+        NombreCortoDesc,
+        FechaActualizacionDesc
+    }
 }

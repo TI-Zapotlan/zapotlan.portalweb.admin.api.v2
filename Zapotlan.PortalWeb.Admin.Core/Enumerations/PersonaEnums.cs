@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Zapotlan.PortalWeb.Admin.Core.Enumerations
+﻿namespace Zapotlan.PortalWeb.Admin.Core.Enumerations
 {
     public enum PersonaEstadoVidaType
     {
@@ -12,5 +6,14 @@ namespace Zapotlan.PortalWeb.Admin.Core.Enumerations
         Vivo,
         Fallecido,
         Desconocido
+    }
+
+    public enum PersonaOrderFilterType
+    { 
+        Ninguno,
+        Nombre,
+        PrimerApellido,
+        NombreDesc,
+        PrimerApellidoDesc
     }
 }

@@ -7,8 +7,6 @@ namespace Zapotlan.PortalWeb.Admin.Infrastructure.Repositories
 {
     public class BaseRepository<T> : IRepository<T> where T : BaseEntity
     {
-        // VARIABLES 
-
         //private readonly PortalWebDbContext _context; // No se utiliza, validar si es mejor quitarlo
         protected DbSet<T> _entity;
 

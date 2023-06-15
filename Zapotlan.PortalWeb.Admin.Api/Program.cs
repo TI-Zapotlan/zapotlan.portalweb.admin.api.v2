@@ -36,6 +36,9 @@ builder.Services.AddDbContext<PortalWebDbContext>(options =>
 builder.Services.AddTransient<IAdministracionRepository, AdministracionRepository>();
 builder.Services.AddTransient<IAdministracionService, AdministracionService>();
 builder.Services.AddTransient<IAdministracionMapping, AdministracionMapping>();
+builder.Services.AddTransient<IAreaService, AreaService>();
+builder.Services.AddTransient<IAreaMapping, AreaMapping>();
+builder.Services.AddTransient<IPersonaService, PersonaService>();
 builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
 
 builder.Services.AddScoped(typeof(IRepository<>), typeof(BaseRepository<>));

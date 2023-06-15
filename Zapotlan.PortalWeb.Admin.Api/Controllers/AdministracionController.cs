@@ -22,13 +22,11 @@ namespace Zapotlan.PortalWeb.Admin.Api.Controllers
         private readonly IAdministracionMapping _administracionMapping;
 
         /// <summary>
-        /// Instancia el controllador que contiene los endpoints para administrar Administraciones
+        /// Instancia el controlador que contiene los endpoints para administrar Administraciones
         /// </summary>
         /// <param name="administracionService"></param>
         /// <param name="administracionMapping"></param>
-        public AdministracionController(
-            IAdministracionService administracionService, 
-            IAdministracionMapping administracionMapping
+        public AdministracionController(IAdministracionService administracionService, IAdministracionMapping administracionMapping
         )
         {
             _administracionService = administracionService;
@@ -43,10 +41,10 @@ namespace Zapotlan.PortalWeb.Admin.Api.Controllers
         /// <param name="filters">Filtros enviados para limitar la consulta</param>
         /// <returns></returns>
         [Produces("application/json")]
-        [HttpGet(Name = nameof(GetList))]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<IEnumerable<AdministracionListDto>>))]
+        [HttpGet(Name = nameof(GetAdministraciones))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<IEnumerable<AdministracionItemListDto>>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public IActionResult GetList([FromQuery]AdministracionQueryFilter filters)
+        public IActionResult GetAdministraciones([FromQuery]AdministracionQueryFilter filters)
         {
             var items = _administracionService.Gets(filters);
             var itemsDto = _administracionMapping.AdministracionesToListDto(items);
@@ -59,7 +57,7 @@ namespace Zapotlan.PortalWeb.Admin.Api.Controllers
                 TotalPages = items.TotalPages
             };
 
-            var response = new ApiResponse<IEnumerable<AdministracionListDto>>(itemsDto)
+            var response = new ApiResponse<IEnumerable<AdministracionItemListDto>>(itemsDto)
             {
                 Meta = metadata
             };
@@ -75,19 +73,13 @@ namespace Zapotlan.PortalWeb.Admin.Api.Controllers
         /// <exception cref="BusinessException"></exception>
         [Produces("application/json")]
         [HttpGet("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<AdministracionItemDto>))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<AdministracionItemDetailDto>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetItem(Guid id)
+        public async Task<IActionResult> GetAdministracion(Guid id)
         { 
-            var item = await _administracionService.GetAsync(id);
-
-            if (item == null)
-            {
-                throw new BusinessException("No se encontró el elemento");
-            }
-
-            var itemDto = _administracionMapping.AdministracionToItemDto(item);
-            var response = new ApiResponse<AdministracionItemDto>(itemDto);
+            var item = await _administracionService.GetAsync(id) ?? throw new BusinessException("No se encontró el elemento");
+            var itemDto = _administracionMapping.AdministracionToItemDetailDto(item);
+            var response = new ApiResponse<AdministracionItemDetailDto>(itemDto);
 
             return Ok(response);
         } // GET:GetItem
@@ -99,16 +91,16 @@ namespace Zapotlan.PortalWeb.Admin.Api.Controllers
         /// <returns></returns>
         [Produces("application/json")]
         [HttpPost]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<AdministracionItemDto>))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<AdministracionItemDetailDto>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Post(AdministracionAddDto itemAddDto)
+        public async Task<IActionResult> PostAdministacion(AdministracionAddDto itemAddDto)
         {
             var item = await _administracionService.AddAsync(new Administracion { 
                 UsuarioActualizacion = itemAddDto.UsuarioActualizacion
             });
 
-            var itemDto = _administracionMapping.AdministracionToItemDto(item);
-            var response = new ApiResponse<AdministracionItemDto>(itemDto);
+            var itemDto = _administracionMapping.AdministracionToItemDetailDto(item);
+            var response = new ApiResponse<AdministracionItemDetailDto>(itemDto);
 
             return Ok(response);
         }
@@ -122,9 +114,9 @@ namespace Zapotlan.PortalWeb.Admin.Api.Controllers
         /// <exception cref="BusinessException"></exception>
         [Produces("application/json")]
         [HttpPut("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<AdministracionItemDto>))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<AdministracionItemDetailDto>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Put(Guid id, AdministracionEditDto itemEditDto)
+        public async Task<IActionResult> PutAdministracion(Guid id, AdministracionEditDto itemEditDto)
         {
             if (id != itemEditDto.ID) 
             {
@@ -135,8 +127,27 @@ namespace Zapotlan.PortalWeb.Admin.Api.Controllers
             toUpdateItem.FechaActualizacion = DateTime.Now;
 
             var updatedItem = await _administracionService.UpdateAsync(toUpdateItem);
-            var itemDto = _administracionMapping.AdministracionToItemDto(updatedItem);
-            var response = new ApiResponse<AdministracionItemDto>(itemDto);
+            var itemDto = _administracionMapping.AdministracionToItemDetailDto(updatedItem);
+            var response = new ApiResponse<AdministracionItemDetailDto>(itemDto);
+
+            return Ok(response);
+        }
+
+        /// <summary>
+        /// Da de baja y elimina un registro existente en la base de datos, dado el 
+        /// identificador recibido.
+        /// Primero solo cambia el estatus a [Baja], posterior a [Eliminado] y finalmente lo elimina 
+        /// completamente de la base de datos
+        /// </summary>
+        /// <param name="id">Identificador del registro a eliminar</param>
+        /// <returns></returns>
+        [Produces("application/json")]
+        [HttpDelete("{id}")]
+        [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ApiResponse<bool>))]
+        public async Task<IActionResult> DeleteAdministracion(Guid id)
+        {
+            var result = await _administracionService.DeleteAsync(id);
+            var response = new ApiResponse<bool>(result);
 
             return Ok(response);
         }

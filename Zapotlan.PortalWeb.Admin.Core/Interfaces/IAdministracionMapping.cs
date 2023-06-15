@@ -5,9 +5,9 @@ namespace Zapotlan.PortalWeb.Admin.Core.Interfaces
 {
     public interface IAdministracionMapping
     {
-        IEnumerable<AdministracionListDto> AdministracionesToListDto(IEnumerable<Administracion> items);
+        IEnumerable<AdministracionItemListDto> AdministracionesToListDto(IEnumerable<Administracion> items);
 
-        AdministracionItemDto AdministracionToItemDto(Administracion item);
+        AdministracionItemDetailDto AdministracionToItemDetailDto(Administracion item);
 
         Administracion ItemEditDtoToAdministracion(AdministracionEditDto itemDto);
     }

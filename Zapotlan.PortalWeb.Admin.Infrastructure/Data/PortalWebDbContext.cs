@@ -14,6 +14,8 @@ namespace Zapotlan.PortalWeb.Admin.Infrastructure.Data
         // PROPERTIES
 
         public DbSet<Administracion> Administraciones { get; set; }
+        public DbSet<Area> Areas { get; set; }
+        public DbSet<Persona> Personas { get; set; }
 
         // CONSTRUCTORS
 

@@ -5,7 +5,7 @@ namespace Zapotlan.PortalWeb.Admin.Core.Entities
 {
     public class Administracion : BaseEntity
     {
-        public string Periodo { get; set; } = string.Empty;
+        public string? Periodo { get; set; }
         public DateTime FechaInicio { get; set; }
         public DateTime FechaTermino { get; set; }
 

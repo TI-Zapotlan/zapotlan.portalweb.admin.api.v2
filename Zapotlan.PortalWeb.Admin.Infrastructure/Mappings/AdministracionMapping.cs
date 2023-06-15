@@ -6,16 +6,16 @@ namespace Zapotlan.PortalWeb.Admin.Infrastructure.Mappings
 {
     public class AdministracionMapping : IAdministracionMapping
     {
-        public IEnumerable<AdministracionListDto> AdministracionesToListDto(IEnumerable<Administracion> items)
+        public IEnumerable<AdministracionItemListDto> AdministracionesToListDto(IEnumerable<Administracion> items)
         {
-            var itemsDto = new List<AdministracionListDto>();
+            var itemsDto = new List<AdministracionItemListDto>();
 
             foreach(var item in items)
             {
-                var itemDto = new AdministracionListDto
+                var itemDto = new AdministracionItemListDto
                 {
                     ID = item.ID,
-                    Periodo = item.Periodo,
+                    Periodo = item.Periodo ?? string.Empty,
                     FechaInicio = item.FechaInicio,
                     FechaTermino = item.FechaTermino,
                     Estatus = item.Estatus,
@@ -31,12 +31,12 @@ namespace Zapotlan.PortalWeb.Admin.Infrastructure.Mappings
             return itemsDto;
         }
 
-        public AdministracionItemDto AdministracionToItemDto(Administracion item) 
+        public AdministracionItemDetailDto AdministracionToItemDetailDto(Administracion item) 
         {
-            var itemDto = new AdministracionItemDto
+            var itemDto = new AdministracionItemDetailDto
             {
                 ID = item.ID,
-                Periodo = item.Periodo,
+                Periodo = item.Periodo ?? string.Empty,
                 FechaInicio = item.FechaInicio,
                 FechaTermino = item.FechaTermino,
                 Estatus = item.Estatus,
@@ -47,12 +47,14 @@ namespace Zapotlan.PortalWeb.Admin.Infrastructure.Mappings
             if (item.AyuntamientoIntegrantes != null) 
             {
                 // HACK: Cambiarlo por AyuntamientoIntegranteDto cuando exista
-                itemDto.Integrantes = new List<AyuntamientoIntegrante>();
+                var integrantes = new List<AyuntamientoIntegrante>();
 
                 foreach (var integrante in item.AyuntamientoIntegrantes)
                 {
-                    itemDto.Integrantes.Add(integrante);
+                    integrantes.Add(integrante);
                 }
+
+                itemDto.Integrantes = integrantes;
             }
 
             return itemDto;
