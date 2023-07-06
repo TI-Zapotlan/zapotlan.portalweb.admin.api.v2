@@ -6,13 +6,13 @@ namespace Zapotlan.PortalWeb.Admin.Core.Entities
     {
         public Guid AyuntamientoIntegranteID { get; set; }
         public Guid ComisionID { get; set; }
-        public ComisionIntegranteType Tipo { get; set; }
+        public ComisionIntegranteType Tipo { get; set; } = ComisionIntegranteType.Ninguno;
         public DateTime FechaComision { get; set; }
-        public EstatusType Estatus { get; set; }
+        public EstatusType Estatus { get; set; } = EstatusType.Ninguno;
 
-        // RELACIONES
+        // RELATIONS
 
-        public AyuntamientoIntegrante AyuntamientoIntegrante { get; set; } = new AyuntamientoIntegrante();
-        public Comision Comision { get; set; } = new Comision();
+        public virtual AyuntamientoIntegrante? AyuntamientoIntegrante { get; set; }
+        public virtual Comision? Comision { get; set; }
     }
 }

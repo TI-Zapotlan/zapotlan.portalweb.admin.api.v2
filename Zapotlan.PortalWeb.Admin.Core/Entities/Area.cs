@@ -1,35 +1,33 @@
-﻿using Zapotlan.PortalWeb.Admin.Core.Enumerations;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using Zapotlan.PortalWeb.Admin.Core.Enumerations;
 
 namespace Zapotlan.PortalWeb.Admin.Core.Entities
 {
     public class Area : BaseEntity
     {
         public Guid? AreaPadreID { get; set; }
-        public Guid? JefeAreaID { get; set; }
-        public Guid? EmpleadoJefeID { get; set; }
+        //public Guid? JefeAreaID { get; set; } // Ignorar este campo
+        public Guid? EmpleadoJefeID { get; set; } // Ver si se va a utilizar también
         public Guid? UbicacionID { get; set; }
 
-        public string Clave { get; set; } = string.Empty;
-        public string Nombre { get; set; } = string.Empty;
-        public string NombreCorto { get; set; } = string.Empty;
-        public string Descripcion { get; set; } = string.Empty;
-        public AreaType Tipo { get; set; }
-        public string UbicacionDescripcion { get; set; } = string.Empty;
-        public string Tags { get; set; } = string.Empty;
-        public EstatusType Estatus { get; set; }
+        public string? Clave { get; set; }
+        public string? Nombre { get; set; }
+        public string? NombreCorto { get; set; }
+        public string? Descripcion { get; set; }
+        public AreaType? Tipo { get; set; }
+        public string? UbicacionDescripcion { get; set; }
+        public string? Tags { get; set; }
+        public EstatusType? Estatus { get; set; }
 
         public Guid UsuarioActualizacionID { get; set; }
 
-        // RELACIONES
+        // RELATIONS
 
-        //public Usuario Usuario { get; set; }
-
-        //public Empleado EmpleadoJefe { get; set; }
-
+        //public virtual Usuario? Usuario { get; set; }
+        //public virtual Empleado? EmpleadoJefe { get; set; }
         public virtual Area? AreaPadre { get; set; }
 
         public virtual ICollection<Area>? Areas { get; set; }
-
         public virtual ICollection<Empleado>? Empleados { get; set; }
     }
 }
