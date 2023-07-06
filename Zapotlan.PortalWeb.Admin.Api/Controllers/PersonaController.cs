@@ -11,7 +11,7 @@ namespace Zapotlan.PortalWeb.Admin.Api.Controllers
     /// <summary>
     /// Contiene los endpoints para realizar las acciones del modelo de Personas
     /// </summary>
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class PersonaController : ControllerBase
     {

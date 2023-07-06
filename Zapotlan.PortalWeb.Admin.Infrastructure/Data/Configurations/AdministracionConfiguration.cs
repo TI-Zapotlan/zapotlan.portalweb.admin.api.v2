@@ -15,7 +15,6 @@ namespace Zapotlan.PortalWeb.Admin.Infrastructure.Data.Configurations
                 .HasColumnName("AdministracionID");
 
             builder.Property(e => e.Periodo)
-                .IsRequired()
                 .HasMaxLength(100);
 
             builder.Property(e => e.FechaInicio)

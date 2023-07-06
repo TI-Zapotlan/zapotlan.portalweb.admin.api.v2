@@ -1,3 +1,5 @@
+using FluentValidation;
+using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Reflection;
@@ -33,15 +35,23 @@ builder.Services.AddDbContext<PortalWebDbContext>(options =>
     options.UseSqlServer(connectionString)
 );
 
-builder.Services.AddTransient<IAdministracionRepository, AdministracionRepository>();
+// builder.Services.AddTransient<IAdministracionRepository, AdministracionRepository>();
 builder.Services.AddTransient<IAdministracionService, AdministracionService>();
 builder.Services.AddTransient<IAdministracionMapping, AdministracionMapping>();
 builder.Services.AddTransient<IAreaService, AreaService>();
 builder.Services.AddTransient<IAreaMapping, AreaMapping>();
+builder.Services.AddTransient<IEmpleadoService, EmpleadoService>();
 builder.Services.AddTransient<IPersonaService, PersonaService>();
 builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
 
 builder.Services.AddScoped(typeof(IRepository<>), typeof(BaseRepository<>));
+
+// Casi todo va antes de cargar MVC
+builder.Services.AddMvcCore();
+// La forma anterior es obsoleta, basado en: https://stackoverflow.com/questions/73402059/asp-net-core-web-api-fluentvalidationmvcextensions-addfluentvalidationimvcbui
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddFluentValidationClientsideAdapters();
+builder.Services.AddValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssemblies());
 
 var app = builder.Build();
 

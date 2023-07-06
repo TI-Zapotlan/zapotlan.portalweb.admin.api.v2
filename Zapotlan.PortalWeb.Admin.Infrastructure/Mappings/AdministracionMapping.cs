@@ -74,5 +74,16 @@ namespace Zapotlan.PortalWeb.Admin.Infrastructure.Mappings
 
             return item;
         }
+
+        public Administracion ItemDeleteToAdministacion(AdministracionDelDto itemDto)
+        {
+            var item = new Administracion
+            {
+                ID = itemDto.ID,
+                UsuarioActualizacion = itemDto.UsuarioActualizacion
+            };
+
+            return item;
+        }
     }
 }

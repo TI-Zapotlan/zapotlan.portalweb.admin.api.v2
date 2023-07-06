@@ -9,6 +9,7 @@ namespace Zapotlan.PortalWeb.Admin.Core.Interfaces
 
         IAdministracionRepository AdministracionRepository { get; }
         IAreaRepository AreaRepository { get; }
+        IEmpleadoRepository EmpleadoRepository { get; }
 
         void SaveChanges();
 

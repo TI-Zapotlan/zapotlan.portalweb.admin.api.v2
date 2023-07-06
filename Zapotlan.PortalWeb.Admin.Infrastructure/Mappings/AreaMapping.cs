@@ -20,9 +20,13 @@ namespace Zapotlan.PortalWeb.Admin.Infrastructure.Mappings
                     Descripcion = item.Descripcion ?? string.Empty,
                     Tipo = item.Tipo ?? Core.Enumerations.AreaType.Ninguno,
                     Estatus = item.Estatus ?? Core.Enumerations.EstatusType.Ninguno,
+                    UsuarioActualizacion = string.IsNullOrEmpty(item.UsuarioActualizacion) 
+                        ? item.UsuarioActualizacionID.ToString() // TODO: Temporal hasta asociar al usuario
+                        : item.UsuarioActualizacion,
+                    FechaActualizacion = item.FechaActualizacion,
+
                     AreaPadreNombre = item.AreaPadre != null ? (item.AreaPadre.Nombre ?? string.Empty) : string.Empty,
-                    EmpleadoJefeNombre = string.Empty, // Por implementar
-                    UsuarioActualizacionNombre = item.UsuarioActualizacion
+                    EmpleadoJefeNombre = string.Empty // TODO: Hasta asociar con el Empleado Jefe
                 };
 
                 itemsDto.Add(itemDto);
@@ -44,7 +48,13 @@ namespace Zapotlan.PortalWeb.Admin.Infrastructure.Mappings
                 UbicacionDescripcion = item.UbicacionDescripcion ?? string.Empty,
                 Tags = item.Tags ?? string.Empty,
                 Estatus = item.Estatus ?? Core.Enumerations.EstatusType.Ninguno,
-                AreaPadreNombre = item.AreaPadre != null ? (item.AreaPadre.Nombre ?? string.Empty) : string.Empty
+                UsuarioActualizacion = string.IsNullOrEmpty(item.UsuarioActualizacion)
+                    ? item.UsuarioActualizacionID.ToString() // TODO: Temporal hasta asociar al usuario
+                    : item.UsuarioActualizacion,
+                FechaActualizacion = item.FechaActualizacion,
+
+                AreaPadreNombre = item.AreaPadre != null ? (item.AreaPadre.Nombre ?? string.Empty) : string.Empty,
+                EmpleadoJefeNombre = string.Empty // TODO: Hasta asociar con el Empleado Jefe
             };
 
             if (item.Areas != null) {
@@ -69,6 +79,19 @@ namespace Zapotlan.PortalWeb.Admin.Infrastructure.Mappings
                 UbicacionDescripcion = itemDto.UbicacionDescripcion,
                 Tags = itemDto.Tags,
                 Estatus = itemDto.Estatus,
+                UsuarioActualizacionID = itemDto.UsuarioActualizacionID,
+                UsuarioActualizacion = itemDto.UsuarioActualizacion
+            };
+
+            return item;
+        }
+
+        public Area ItemDeleteToArea(AreaDelDto itemDto)
+        {
+            var item = new Area {
+                ID = itemDto.ID,
+                UsuarioActualizacionID = itemDto.UsuarioActualizacionID,
+                UsuarioActualizacion = itemDto.UsuarioActualizacion
             };
 
             return item;

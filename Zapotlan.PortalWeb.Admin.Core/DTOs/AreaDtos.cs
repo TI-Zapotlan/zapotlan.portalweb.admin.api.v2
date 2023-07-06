@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Zapotlan.PortalWeb.Admin.Core.Entities;
-using Zapotlan.PortalWeb.Admin.Core.Enumerations;
+﻿using Zapotlan.PortalWeb.Admin.Core.Enumerations;
 
 namespace Zapotlan.PortalWeb.Admin.Core.DTOs
 {
@@ -17,10 +11,11 @@ namespace Zapotlan.PortalWeb.Admin.Core.DTOs
         public string Descripcion { get; set; } = string.Empty;
         public AreaType Tipo { get; set; } = AreaType.Ninguno;
         public EstatusType Estatus { get; set; } = EstatusType.Ninguno;
+        public string UsuarioActualizacion { get; set; } = string.Empty;
+        public DateTime FechaActualizacion { get; set; }
 
         public string AreaPadreNombre { get; set; } = string.Empty;
         public string EmpleadoJefeNombre { get; set; } = string.Empty;
-        public string UsuarioActualizacionNombre { get; set; } = string.Empty;
     }
 
     public class AreaItemDetailDto
@@ -34,9 +29,13 @@ namespace Zapotlan.PortalWeb.Admin.Core.DTOs
         public string UbicacionDescripcion { get; set; } = string.Empty;
         public string Tags { get; set; } = string.Empty;
         public EstatusType Estatus { get; set; } = EstatusType.Ninguno;
+        public string UsuarioActualizacion { get; set; } = string.Empty;
+        public DateTime FechaActualizacion { get; set; }
 
         public string AreaPadreNombre { get; set; } = string.Empty;
-        public virtual IEnumerable<AreaItemListDto>? Areas { get; set; }
+        public string EmpleadoJefeNombre { get; set; } = string.Empty;
+
+        public IEnumerable<AreaItemListDto>? Areas { get; set; }
     }
 
     public class AreaAddDto
@@ -61,5 +60,14 @@ namespace Zapotlan.PortalWeb.Admin.Core.DTOs
         public string UbicacionDescripcion { get; set; } = string.Empty;
         public string Tags { get; set; } = string.Empty;
         public EstatusType Estatus { get; set; } = EstatusType.Ninguno;
+        public Guid UsuarioActualizacionID { get; set; }
+        public string UsuarioActualizacion { get; set; } = string.Empty;
+    }
+
+    public class AreaDelDto
+    { 
+        public Guid ID { get; set; }
+        public Guid UsuarioActualizacionID { get; set; }
+        public string UsuarioActualizacion { get; set; } = string.Empty;
     }
 }

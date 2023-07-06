@@ -10,5 +10,7 @@ namespace Zapotlan.PortalWeb.Admin.Core.Interfaces
         AdministracionItemDetailDto AdministracionToItemDetailDto(Administracion item);
 
         Administracion ItemEditDtoToAdministracion(AdministracionEditDto itemDto);
+
+        Administracion ItemDeleteToAdministacion(AdministracionDelDto itemDto);
     }
 }

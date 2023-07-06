@@ -42,5 +42,11 @@ namespace Zapotlan.PortalWeb.Admin.Core.DTOs
         public EstatusType Estatus { get; set; }
         public string UsuarioActualizacion { get; set; } = string.Empty;
     }
+
+    public class AdministracionDelDto
+    {
+        public Guid ID { get; set; }
+        public string UsuarioActualizacion { get; set; } = string.Empty;
+    }
 }
 

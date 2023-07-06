@@ -14,6 +14,6 @@ namespace Zapotlan.PortalWeb.Admin.Core.Interfaces
 
         Task<Administracion> UpdateAsync(Administracion item);
 
-        Task<bool> DeleteAsync(Guid id);
+        Task<bool> DeleteAsync(Administracion item);
     }
 }

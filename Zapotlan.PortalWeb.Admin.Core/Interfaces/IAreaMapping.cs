@@ -10,5 +10,7 @@ namespace Zapotlan.PortalWeb.Admin.Core.Interfaces
         AreaItemDetailDto AreaToItemDetailDto(Area item);
 
         Area ItemEditToArea(AreaEditDto itemDto);
+
+        Area ItemDeleteToArea(AreaDelDto itemDto);
     }
 }

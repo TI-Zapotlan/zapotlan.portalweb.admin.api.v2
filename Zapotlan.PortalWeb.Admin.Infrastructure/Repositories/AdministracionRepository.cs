@@ -9,6 +9,8 @@ namespace Zapotlan.PortalWeb.Admin.Infrastructure.Repositories
 {
     public class AdministracionRepository : BaseRepository<Administracion>, IAdministracionRepository
     {
+        // CONSTRUCTOR 
+
         public AdministracionRepository(PortalWebDbContext context) : base(context) { }
 
         // METHODS

@@ -31,7 +31,7 @@ namespace Zapotlan.PortalWeb.Admin.Core.Services
 
             if (!string.IsNullOrEmpty(filters.Periodo)) 
             { 
-                items = items.Where(i => i.Periodo.ToLower().Contains(filters.Periodo.ToLower()));
+                items = items.Where(i => i.Periodo != null && i.Periodo.ToLower().Contains(filters.Periodo.ToLower()));
             }
 
             if (filters.FechaInicio != null) 
@@ -50,12 +50,16 @@ namespace Zapotlan.PortalWeb.Admin.Core.Services
             }
             else 
             {
-                items = items.Where(i => i.Estatus != EstatusType.Ninguno);
+                filters.IncludeEliminados ??= false;
+                items = (bool)filters.IncludeEliminados
+                    ? items.Where(i => i.Estatus != EstatusType.Ninguno)
+                    : items.Where(i => i.Estatus != EstatusType.Ninguno && i.Estatus != EstatusType.Eliminado);
             }
 
             // Order
 
-            switch (filters.Orden) {
+            switch (filters.Orden)
+            {
                 case AdministracionOrderFilterType.Periodo:
                     items = items.OrderBy(i => i.Periodo); 
                     break;
@@ -89,14 +93,13 @@ namespace Zapotlan.PortalWeb.Admin.Core.Services
                 throw new BusinessException("Faltó especificar el usuario que ejecuta la aplicación.");
             }
 
-            // TODO: Validar permiso del usuario
+            // TODO: Validar permiso del usuario y si el usuario existe
 
             item.ID = Guid.NewGuid();
             item.Estatus = EstatusType.Ninguno;
             item.FechaActualizacion = DateTime.Now;
 
             await _unitOfWork.AdministracionRepository.DeleteTmpByUser(item.UsuarioActualizacion);
-
             await _unitOfWork.AdministracionRepository.AddAsync(item);
             await _unitOfWork.SaveChangesAsync();
 
@@ -109,6 +112,12 @@ namespace Zapotlan.PortalWeb.Admin.Core.Services
                 .GetByDateRangeWithException(item.FechaInicio, item.FechaTermino, item.ID);
             if (adminFound.Any()) {
                 throw new BusinessException("Ya existe un registro dentro del rango de fechas establecido");
+            }
+
+            // Validar si esta cambiando el registro como activo
+            if (item.Estatus == EstatusType.Activo) 
+            {
+                await _unitOfWork.AdministracionRepository.DisableActiveAdmin(item.ID);
             }
 
             if (string.IsNullOrEmpty(item.UsuarioActualizacion))
@@ -127,24 +136,26 @@ namespace Zapotlan.PortalWeb.Admin.Core.Services
             return item;
         }
 
-        public async Task<bool> DeleteAsync(Guid id)
+        public async Task<bool> DeleteAsync(Administracion item)
         {
-            var item = await _unitOfWork.AdministracionRepository.GetAsync(id) ?? throw new BusinessException("No se encontró el registro.");
+            var currItem = await _unitOfWork.AdministracionRepository.GetAsync(item.ID) ?? throw new BusinessException("No se encontró el registro.");
 
-            //var ayuntamientoFound = await _unitOfWork.AyuntamientoIntegranteRepository.GetByAdministracionID(id);
-            //if (ayuntamientoFound.Any())
-            //{
-            //    throw new BusinessException("No se puede eliminar la administración pues hay registros de integrantes del ayuntamiento asociados.");
-            //}
-
-            if (item.Estatus == EstatusType.Eliminado)
+            if (currItem.Estatus == EstatusType.Eliminado)
             {
-                await _unitOfWork.AdministracionRepository.DeleteAsync(id);
+                //var ayuntamientoFound = await _unitOfWork.AyuntamientoIntegranteRepository.GetByAdministracionID(id);
+                //if (ayuntamientoFound.Any())
+                //{
+                //    throw new BusinessException("No se puede eliminar la administración pues hay registros de integrantes del ayuntamiento asociados.");
+                //}
+                // Verificar validaciones a datos enlazados
+                await _unitOfWork.AdministracionRepository.DeleteAsync(currItem.ID);
             }
             else
-            { 
-                item.Estatus = item.Estatus == EstatusType.Activo ? EstatusType.Baja : EstatusType.Eliminado;
-                await _unitOfWork.AdministracionRepository.UpdateAsync(item);
+            {
+                currItem.Estatus = currItem.Estatus == EstatusType.Activo ? EstatusType.Baja : EstatusType.Eliminado;
+                currItem.UsuarioActualizacion = item.UsuarioActualizacion;
+                currItem.FechaActualizacion = DateTime.Now;
+                await _unitOfWork.AdministracionRepository.UpdateAsync(currItem);
             }
 
             await _unitOfWork.SaveChangesAsync();

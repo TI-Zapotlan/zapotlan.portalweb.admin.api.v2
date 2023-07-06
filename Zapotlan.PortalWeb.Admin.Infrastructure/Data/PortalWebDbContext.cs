@@ -15,6 +15,7 @@ namespace Zapotlan.PortalWeb.Admin.Infrastructure.Data
 
         public DbSet<Administracion> Administraciones { get; set; }
         public DbSet<Area> Areas { get; set; }
+        public DbSet<Empleado> Empleados { get; set; }
         public DbSet<Persona> Personas { get; set; }
 
         // CONSTRUCTORS
@@ -27,6 +28,7 @@ namespace Zapotlan.PortalWeb.Admin.Infrastructure.Data
         {
             base.OnModelCreating(modelBuilder);
 
+            // Va y busca los IEntityTypeConfiguration y los aplica
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         }
     }

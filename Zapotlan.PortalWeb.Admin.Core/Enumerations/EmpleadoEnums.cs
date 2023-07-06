@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Zapotlan.PortalWeb.Admin.Core.Enumerations
+﻿namespace Zapotlan.PortalWeb.Admin.Core.Enumerations
 {
     public enum EmpleadoStatusType
     {
@@ -12,6 +6,26 @@ namespace Zapotlan.PortalWeb.Admin.Core.Enumerations
         Activo,
         Licencia,
         Baja,
-        Suspendido
+        Suspendido,
+        Eliminado
+    }
+
+    public enum EmpleadoFechaType
+    { 
+        Ninguno,
+        Ingreso,
+        Termino,
+        Actualizacion
+    }
+
+    public enum EmpleadoOrderFilterType
+    { 
+        Ninguno,
+        Codigo,
+        Nombre,
+        FechaIngreso,
+        CodigoDesc,
+        NombreDesc,
+        FechaIngresoDesc
     }
 }

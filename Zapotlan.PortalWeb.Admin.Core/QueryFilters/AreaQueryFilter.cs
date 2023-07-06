@@ -9,6 +9,6 @@ namespace Zapotlan.PortalWeb.Admin.Core.QueryFilters
         public AreaType Tipo { get; set; } = AreaType.Ninguno;
         public EstatusType Estatus { get; set; } = EstatusType.Ninguno;
 
-        public AreaOrderFilterType Orden {  get; set; }
+        public AreaOrderFilterType Orden { get; set; } = AreaOrderFilterType.Nombre;
     }
 }

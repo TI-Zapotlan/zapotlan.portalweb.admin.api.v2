@@ -13,12 +13,14 @@ namespace Zapotlan.PortalWeb.Admin.Infrastructure.Repositories
 
         private readonly IAdministracionRepository _administracionRepository;
         private readonly IAreaRepository _areaRepository;
+        private readonly IEmpleadoRepository _empleadoRepository;
 
-        public IRepository<Archivo> ArchivoRepository => _archivoRepository ?? new BaseRepository<Archivo>(_context);
+        public IRepository<Archivo> ArchivoRepository => _archivoRepository ?? new BaseRepository<Archivo>(_context);        
         public IRepository<Persona> PersonaRepository => _personaRepository ?? new BaseRepository<Persona>(_context);
 
         public IAdministracionRepository AdministracionRepository => _administracionRepository ?? new AdministracionRepository(_context);
         public IAreaRepository AreaRepository => _areaRepository ?? new AreaRepository(_context);
+        public IEmpleadoRepository EmpleadoRepository => _empleadoRepository ?? new EmpleadoRepository(_context);
 
         public UnitOfWork(PortalWebDbContext context)
         {

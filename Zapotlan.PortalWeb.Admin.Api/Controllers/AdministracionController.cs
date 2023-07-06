@@ -14,7 +14,7 @@ namespace Zapotlan.PortalWeb.Admin.Api.Controllers
     /// <summary>
     /// Contiene los endpoints para realizar las acciones de modelo de Administraciones
     /// </summary>
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class AdministracionController : ControllerBase
     {
@@ -85,7 +85,7 @@ namespace Zapotlan.PortalWeb.Admin.Api.Controllers
         } // GET:GetItem
 
         /// <summary>
-        /// Genera un registro nuevo en la base de datos con sus propiedades en blanco
+        /// Genera un registro nuevo en la base de datos con los valores mínimos
         /// </summary>
         /// <param name="itemAddDto">Objeto tipo Administador con los datos mínimos para crear el registro</param>
         /// <returns></returns>
@@ -109,7 +109,7 @@ namespace Zapotlan.PortalWeb.Admin.Api.Controllers
         /// Actualiza un registro existente en la base de datos, con los parametros recibidos
         /// </summary>
         /// <param name="id">Identificador del registro a actualizar</param>
-        /// <param name="itemEditDto">Objeto de tipo administador con los datos para actualizar</param>
+        /// <param name="itemEditDto">Objeto de tipo Administador con los datos para actualizar</param>
         /// <returns></returns>
         /// <exception cref="BusinessException"></exception>
         [Produces("application/json")]
@@ -140,13 +140,21 @@ namespace Zapotlan.PortalWeb.Admin.Api.Controllers
         /// completamente de la base de datos
         /// </summary>
         /// <param name="id">Identificador del registro a eliminar</param>
+        /// <param name="itemDelDto"></param>
         /// <returns></returns>
         [Produces("application/json")]
         [HttpDelete("{id}")]
         [ProducesResponseType((int)HttpStatusCode.OK, Type = typeof(ApiResponse<bool>))]
-        public async Task<IActionResult> DeleteAdministracion(Guid id)
+        public async Task<IActionResult> DeleteAdministracion(Guid id, AdministracionDelDto itemDelDto)
         {
-            var result = await _administracionService.DeleteAsync(id);
+            if (id != itemDelDto.ID)
+            {
+                throw new BusinessException("El id no coincide con el identificador de la ruta");
+            }
+
+            var item = _administracionMapping.ItemDeleteToAdministacion(itemDelDto);
+
+            var result = await _administracionService.DeleteAsync(item);
             var response = new ApiResponse<bool>(result);
 
             return Ok(response);

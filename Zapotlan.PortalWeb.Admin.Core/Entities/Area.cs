@@ -28,6 +28,6 @@ namespace Zapotlan.PortalWeb.Admin.Core.Entities
         public virtual Area? AreaPadre { get; set; }
 
         public virtual ICollection<Area>? Areas { get; set; }
-        //public virtual ICollection<Empleado>? Empleados { get; set; }
+        public virtual ICollection<Empleado>? Empleados { get; set; }
     }
 }

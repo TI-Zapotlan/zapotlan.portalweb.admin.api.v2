@@ -55,7 +55,7 @@ namespace Zapotlan.PortalWeb.Admin.Infrastructure.Data.Configurations
                 .WithMany(e => e.Areas)
                 .HasForeignKey(e => e.AreaPadreID);
 
-            //builder.HasMany(e => e.Empleados)
+            //builder.HasMany(e => e.Empleados) // xBlaze: Este está en EmpleadosConfiguration
             //    .WithOne(e => e.Area)
             //    .HasForeignKey(e => e.AreaID);
         }
