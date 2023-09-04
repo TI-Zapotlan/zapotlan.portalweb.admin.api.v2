@@ -6,6 +6,7 @@ namespace Zapotlan.PortalWeb.Admin.Core.QueryFilters
     {
         public string? Texto { get; set; }
         public PersonaEstadoVidaType EstadoVida { get; set; } = PersonaEstadoVidaType.Ninguno;
+        public EstatusType? Estatus { get; set; }
         public PersonaOrderFilterType Orden { get; set; } = PersonaOrderFilterType.Ninguno;
     }
 }

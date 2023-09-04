@@ -14,6 +14,19 @@ using Zapotlan.PortalWeb.Admin.Infrastructure.Repositories;
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DesarrolloConnection");
 // Add services to the container.
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
+builder.Services.AddCors(o => {
+    o.AddPolicy(name: MyAllowSpecificOrigins,
+        policy => {
+            policy.WithOrigins(
+                //"http://localhost:3000",
+                "http://localhost:5173"
+                )
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+        });
+});
 
 builder.Services.AddControllers(options => { 
     options.Filters.Add<GlobalExceptionFilter>();
@@ -42,6 +55,7 @@ builder.Services.AddTransient<IAreaService, AreaService>();
 builder.Services.AddTransient<IAreaMapping, AreaMapping>();
 builder.Services.AddTransient<IEmpleadoService, EmpleadoService>();
 builder.Services.AddTransient<IPersonaService, PersonaService>();
+builder.Services.AddTransient<IPersonaMapping, PersonaMapping>();
 builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
 
 builder.Services.AddScoped(typeof(IRepository<>), typeof(BaseRepository<>));
@@ -55,12 +69,17 @@ builder.Services.AddValidatorsFromAssemblies(AppDomain.CurrentDomain.GetAssembli
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+//// Configure the HTTP request pipeline.
+//if (app.Environment.IsDevelopment())
+//{
+//    app.UseSwagger();
+//    app.UseSwaggerUI();
+//}
+
+app.UseSwagger();
+app.UseSwaggerUI();
+
+app.UseCors(MyAllowSpecificOrigins);
 
 app.UseAuthorization();
 

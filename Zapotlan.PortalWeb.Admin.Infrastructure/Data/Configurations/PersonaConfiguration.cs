@@ -20,18 +20,26 @@ namespace Zapotlan.PortalWeb.Admin.Infrastructure.Data.Configurations
                 .HasColumnName("IdPersona");
 
             builder.Property(e => e.Nombres)
-                .IsRequired()
-                .HasMaxLength(50);
+                .HasMaxLength(100);
 
             builder.Property(e => e.PrimerApellido)
                 .HasColumnName("ApellidoPaterno")
-                .HasMaxLength(50);
+                .HasMaxLength(100);
 
             builder.Property(e => e.SegundoApellido)
                 .HasColumnName("ApellidoMaterno")
-                .HasMaxLength(50);
+                .HasMaxLength(100);
+
+            builder.Property(e => e.CURP)                
+                .HasMaxLength(18);
+
+            builder.Property(e => e.RFC)
+                .HasMaxLength(15);
 
             builder.Property(e => e.FechaNacimiento)
+                .HasColumnType("Date");
+
+            builder.Property(e => e.FechaDefuncion)
                 .HasColumnType("Date");
 
             builder.Property(e => e.EstadoVida)
@@ -40,7 +48,7 @@ namespace Zapotlan.PortalWeb.Admin.Infrastructure.Data.Configurations
 
             builder.Property(e => e.UsuarioActualizacion)
                 .IsRequired()
-                .HasMaxLength(25);
+                .HasMaxLength(50);
 
             builder.Property(e => e.FechaActualizacion)
                 .IsRequired()
