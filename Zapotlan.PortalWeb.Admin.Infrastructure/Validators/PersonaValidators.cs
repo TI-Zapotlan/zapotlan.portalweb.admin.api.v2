@@ -28,13 +28,16 @@ namespace Zapotlan.PortalWeb.Admin.Infrastructure.Validators
             RuleFor(i => i.ID)
                 .NotEmpty().WithMessage("Faltó especificar el identificador del registro a actualizar");
 
+            RuleFor(i => i.Nombres)
+                .NotEmpty().WithMessage("Faltó especificar el nombre de la persona");
+
             RuleFor(i => i.PrimerApellido)
                 .NotEmpty().When(i => string.IsNullOrEmpty(i.SegundoApellido)).WithMessage("Al menos debe de haber un apellido.")
-                .MaximumLength(100).WithMessage("El primer apellido, no puede ser mayor a {Maxlength} carácteres"); ;
+                .MaximumLength(100).WithMessage("El primer apellido, no puede ser mayor a {Maxlength} carácteres");
 
             RuleFor(i => i.SegundoApellido)
                 .NotEmpty().When(i => string.IsNullOrEmpty(i.PrimerApellido)).WithMessage("Al menos debe de haber un apellido.")
-                .MaximumLength(100).WithMessage("El segundo apellido, no puede ser mayor a {Maxlength} carácteres"); ;
+                .MaximumLength(100).WithMessage("El segundo apellido, no puede ser mayor a {Maxlength} carácteres");
 
             RuleFor(i => i.CURP)
                 .Matches(patronCURP)
@@ -48,7 +51,7 @@ namespace Zapotlan.PortalWeb.Admin.Infrastructure.Validators
 
             RuleFor(i => i.FechaDefuncion)
                 .GreaterThan(DateTime.Today)
-                .WithMessage("La fecha de defunción, no puede ser mayor a la del día de hoy.");
+                .WithMessage("La fecha de defunción, no puede ser mayor a la fecha actual.");
 
             RuleFor(i => i.EstadoVida)
                 .IsInEnum().WithMessage("El valor {PropertyValue} para {PropertyName} no es un valor válido");

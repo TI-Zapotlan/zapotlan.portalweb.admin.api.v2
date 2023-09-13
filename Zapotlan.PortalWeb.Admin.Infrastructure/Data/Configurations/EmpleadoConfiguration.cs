@@ -47,7 +47,8 @@ namespace Zapotlan.PortalWeb.Admin.Infrastructure.Data.Configurations
 
             builder.HasOne(e => e.Persona)
                 .WithOne()
-                .HasForeignKey<Empleado>(e => e.PersonaID);
+                .HasForeignKey<Empleado>(e => e.PersonaID)
+                .IsRequired(false);
 
             builder.HasOne(e => e.Area)
                 .WithMany(a => a.Empleados)

@@ -1,10 +1,4 @@
-﻿using FluentValidation.Validators;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.EntityFrameworkCore;
 using Zapotlan.PortalWeb.Admin.Core.Entities;
 using Zapotlan.PortalWeb.Admin.Core.Enumerations;
 using Zapotlan.PortalWeb.Admin.Core.Exceptions;
@@ -81,12 +75,26 @@ namespace Zapotlan.PortalWeb.Admin.Infrastructure.Repositories
                 ).FirstOrDefaultAsync();
         }
 
+        public async Task<bool> ExistCodigo(string codigo, Guid? excludeID)
+        {
+            return await _entity
+                .Where(e => e.Codigo == codigo && (excludeID == null || e.ID != excludeID))
+                .AnyAsync();
+        }
+
+        public async Task<bool> PersonaIsUsed(Guid id, Guid? excludeID)
+        {
+            return await _entity
+                .Where(e => e.PersonaID == id && (excludeID == null || e.ID != excludeID))
+                .AnyAsync();
+        }
+
         public async Task DeleteTmpByUser(string username)
         {
             var items = await _entity
                 .Where(e => 
                     e.UsuarioActualizacion == username 
-                    && e.Estatus == Core.Enumerations.EmpleadoStatusType.Ninguno)
+                    && e.Estatus == EmpleadoStatusType.Ninguno)
                 .ToListAsync();
             foreach(var item in items) 
             {
@@ -99,7 +107,7 @@ namespace Zapotlan.PortalWeb.Admin.Infrastructure.Repositories
             return await _entity
                 .Where(e => 
                     e.EmpleadoJefeID == id 
-                    && e.Estatus == Core.Enumerations.EmpleadoStatusType.Activo)
+                    && e.Estatus == EmpleadoStatusType.Activo)
                 .AnyAsync();
         }
 

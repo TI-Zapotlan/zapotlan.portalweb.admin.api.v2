@@ -19,7 +19,7 @@ namespace Zapotlan.PortalWeb.Admin.Core.Entities
 
         // RELATIONS
 
-        public virtual Persona Persona { get; set; } = new Persona();
+        public virtual Persona? Persona { get; set; }
         public virtual Area? Area { get; set; }
         public virtual Empleado? Jefe { get; set; }
 

@@ -5,6 +5,7 @@ namespace Zapotlan.PortalWeb.Admin.Core.DTOs
     public class AreaItemListDto
     {
         public Guid ID { get; set; }
+        public Guid? AreaPadreID { get; set; }
         public string Clave { get; set; } = string.Empty;
         public string Nombre { get; set; } = string.Empty;
         public string NombreCorto { get; set; } = string.Empty;
@@ -21,6 +22,7 @@ namespace Zapotlan.PortalWeb.Admin.Core.DTOs
     public class AreaItemDetailDto
     {
         public Guid ID { get; set; }
+        public Guid? AreaPadreID { get; set; }
         public string Clave { get; set; } = string.Empty;
         public string Nombre { get; set; } = string.Empty;
         public string NombreCorto { get; set; } = string.Empty;

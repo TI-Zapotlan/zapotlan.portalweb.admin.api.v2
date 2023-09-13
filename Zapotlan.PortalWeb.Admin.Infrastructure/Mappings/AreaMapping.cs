@@ -14,6 +14,7 @@ namespace Zapotlan.PortalWeb.Admin.Infrastructure.Mappings
             {
                 var itemDto = new AreaItemListDto { 
                     ID = item.ID,
+                    AreaPadreID = item.AreaPadreID,
                     Clave = item.Clave ?? string.Empty,
                     Nombre = item.Nombre ?? string.Empty,
                     NombreCorto = item.NombreCorto ?? string.Empty,
@@ -40,6 +41,7 @@ namespace Zapotlan.PortalWeb.Admin.Infrastructure.Mappings
             var itemDto = new AreaItemDetailDto
             {
                 ID = item.ID,
+                AreaPadreID = item.AreaPadreID,
                 Clave = item.Clave ?? string.Empty,
                 Nombre = item.Nombre ?? string.Empty,
                 NombreCorto = item.NombreCorto ?? string.Empty,

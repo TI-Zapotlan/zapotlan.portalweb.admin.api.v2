@@ -30,7 +30,8 @@ namespace Zapotlan.PortalWeb.Admin.Core.Services
             {
                 filters.Texto = filters.Texto.ToLower().Trim();
                 items = items.Where(i => 
-                    i.Nombres.ToLower().Contains(filters.Texto)
+                    (i.Prefijo != null && i.Prefijo.ToLower().Contains(filters.Texto))
+                    || (i.Nombres != null && i.Nombres.ToLower().Contains(filters.Texto))
                     || (i.PrimerApellido != null && i.PrimerApellido.ToLower().Contains(filters.Texto))
                     || (i.SegundoApellido != null && i.SegundoApellido.ToLower().Contains(filters.Texto))
                     || (i.CURP != null && i.CURP.ToLower().Contains(filters.Texto))

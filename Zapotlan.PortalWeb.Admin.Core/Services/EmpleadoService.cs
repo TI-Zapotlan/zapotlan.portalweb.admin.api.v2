@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Zapotlan.PortalWeb.Admin.Core.CustomEntities;
+﻿using Zapotlan.PortalWeb.Admin.Core.CustomEntities;
 using Zapotlan.PortalWeb.Admin.Core.Entities;
 using Zapotlan.PortalWeb.Admin.Core.Enumerations;
 using Zapotlan.PortalWeb.Admin.Core.Exceptions;
@@ -149,26 +144,14 @@ namespace Zapotlan.PortalWeb.Admin.Core.Services
 
         public async Task<Empleado> UpdateAsync(Empleado item)
         {
-            //if (string.IsNullOrEmpty(item.UsuarioActualizacion)) // Este esta en EmpleadoValidators
-            //{
-            //    throw new BusinessException("Faltó especificar el usuario que ejecuta la aplicación.");
-            //}
-
-            //if (item.PersonaID == null || item.PersonaID == Guid.Empty) // Este esta en EmpleadoValidators
-            //{
-            //    throw new BusinessException("No esta asociada una Persona con los datos del Empleado.");
-            //}
-
             // Que el código no este ya siendo utilizado
-            var itemFound = await _unitOfWork.EmpleadoRepository.GetByCodigo(item.Codigo, item.ID);
-            if (itemFound != null)
+            if (await _unitOfWork.EmpleadoRepository.ExistCodigo(item.Codigo, item.ID))
             {
                 throw new BusinessException($"Ya existe un registro de Empleado con el código {item.Codigo}.");
             }
 
             // Que la persona no esté asociada con otro registro de empleado
-            var itemFound2 = await _unitOfWork.EmpleadoRepository.GetByPersona(item.PersonaID, item.ID);
-            if (itemFound2 != null)
+            if (await _unitOfWork.EmpleadoRepository.PersonaIsUsed(item.PersonaID ?? Guid.Empty, item.ID))
             {
                 throw new BusinessException("El registro de la persona ya esta asociado con otro empleado.");
             }
@@ -193,12 +176,14 @@ namespace Zapotlan.PortalWeb.Admin.Core.Services
 
         public async Task<bool> DeleteAsync(Empleado item)
         {
-            var cItem = await _unitOfWork.EmpleadoRepository.GetAsync(item.ID);
-
-            if (cItem == null) throw new BusinessException("No se encontró el registro a eliminar");
+            var cItem = await _unitOfWork.EmpleadoRepository.GetAsync(item.ID) 
+                ?? throw new BusinessException("No se encontró el registro a eliminar");
 
             if (cItem.Estatus == EmpleadoStatusType.Eliminado)
             {
+                // Validaciones antes de eliminar
+                // - No tener empleados bajo su cargo
+                // - No estar como parte de una administración
                 await _unitOfWork.EmpleadoRepository.DeleteAsync(item.ID);
             }
             else // En este caso solo puede cambiar a eliminado, el cambio a baja, se encuentra en UpdateAsync

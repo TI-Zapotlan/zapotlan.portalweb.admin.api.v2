@@ -20,8 +20,9 @@ builder.Services.AddCors(o => {
     o.AddPolicy(name: MyAllowSpecificOrigins,
         policy => {
             policy.WithOrigins(
-                //"http://localhost:3000",
-                "http://localhost:5173"
+                "http://localhost:5173",
+                "http://localhost:2300",
+                "http://10.0.0.17:2300"
                 )
             .AllowAnyHeader()
             .AllowAnyMethod();
@@ -54,6 +55,7 @@ builder.Services.AddTransient<IAdministracionMapping, AdministracionMapping>();
 builder.Services.AddTransient<IAreaService, AreaService>();
 builder.Services.AddTransient<IAreaMapping, AreaMapping>();
 builder.Services.AddTransient<IEmpleadoService, EmpleadoService>();
+builder.Services.AddTransient<IEmpleadoMapping, EmpleadoMapping>();
 builder.Services.AddTransient<IPersonaService, PersonaService>();
 builder.Services.AddTransient<IPersonaMapping, PersonaMapping>();
 builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
