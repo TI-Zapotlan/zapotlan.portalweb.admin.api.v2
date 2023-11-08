@@ -18,5 +18,7 @@ namespace Zapotlan.PortalWeb.Admin.Core.Interfaces
         Task<bool> HasEmployees(Guid id);
 
         Task DeleteTmpByUser(string username);
+
+        Task FileUpload(Guid id, string fileName, EmpleadoFileType type, string usuarioActualizacion);
     }
 }

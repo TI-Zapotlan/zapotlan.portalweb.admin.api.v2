@@ -42,15 +42,6 @@ namespace Zapotlan.PortalWeb.Admin.Infrastructure.Mappings
                                 item.Persona.Nombres,
                                 item.Persona.PrimerApellido,
                                 item.Persona.SegundoApellido)
-                            //!string.IsNullOrEmpty(item.Persona.Nombres) 
-                            //    ? item.Persona.Nombres 
-                            //    : string.Empty
-                            //+ (!string.IsNullOrEmpty(item.Persona.PrimerApellido) 
-                            //    ? " " + item.Persona.PrimerApellido 
-                            //    : string.Empty)
-                            //+ (!string.IsNullOrEmpty(item.Persona.SegundoApellido) 
-                            //    ? " " + item.Persona.SegundoApellido
-                            //    : string.Empty)
                           ) 
                         : string.Empty,
                     NombreArea = item.Area != null
@@ -71,6 +62,9 @@ namespace Zapotlan.PortalWeb.Admin.Infrastructure.Mappings
             var itemDto = new EmpleadoItemDetailDto
             {
                 ID = item.ID,
+                AreaID = item.AreaID,
+                EmpleadoJefeID = item.EmpleadoJefeID,
+                PersonaID = item.PersonaID,
                 Codigo = item.Codigo,
                 NombrePuesto = item.NombrePuesto,
                 ArchivoFotografia = item.ArchivoFotografia,

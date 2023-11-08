@@ -31,6 +31,8 @@ namespace Zapotlan.PortalWeb.Admin.Infrastructure.Repositories
                 .Include(e => e.Jefe)
                     .ThenInclude(j => j.Persona)
                 .Include(e => e.Empleados)
+                    .ThenInclude(i => i.Area)
+                .Include(e => e.Empleados)
                     .ThenInclude(i => i.Persona)
                 .Where(e => e.ID == id)
                 .FirstOrDefaultAsync();
@@ -39,6 +41,7 @@ namespace Zapotlan.PortalWeb.Admin.Infrastructure.Repositories
         public async Task UpdateAsync(Empleado item)
         {
             var cItem = await _entity.FindAsync(item.ID) ?? throw new BusinessException("No se encontró el registro a actualizar en la base de datos");
+            
             cItem.AreaID = item.AreaID;
             cItem.EmpleadoJefeID = item.EmpleadoJefeID;
             cItem.PersonaID = item.PersonaID;
@@ -117,6 +120,24 @@ namespace Zapotlan.PortalWeb.Admin.Infrastructure.Repositories
                 .Where( e => e.ID == id)
                 .Select(e => e.Estatus)
                 .FirstOrDefaultAsync();
+        }
+
+        public async Task FileUpload(Guid id, string fileName, EmpleadoFileType type, string usuarioActualizacion)
+        {
+            var cItem = await _entity.FindAsync(id) ?? throw new BusinessException("No se encontró el registro a actualizar en la base de datos");
+
+            if (type == EmpleadoFileType.FotoPerfil)
+            {
+                cItem.ArchivoFotografia = fileName;
+            }
+            else if (type == EmpleadoFileType.CurriculumVitae) {
+                cItem.ArchivoCV = fileName;
+            }
+
+            cItem.FechaActualizacion = DateTime.Now;
+            cItem.UsuarioActualizacion = usuarioActualizacion;
+
+            _entity.Update(cItem);
         }
     }
 }

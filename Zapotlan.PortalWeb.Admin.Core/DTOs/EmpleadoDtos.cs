@@ -23,6 +23,9 @@ namespace Zapotlan.PortalWeb.Admin.Core.DTOs
     public class EmpleadoItemDetailDto
     {
         public Guid ID { get; set; }
+        public Guid? AreaID { get; set; }
+        public Guid? EmpleadoJefeID { get; set; }
+        public Guid? PersonaID { get; set; }
 
         public string Codigo { get; set; } = string.Empty;
         public string NombrePuesto { get; set; } = string.Empty;
@@ -64,6 +67,13 @@ namespace Zapotlan.PortalWeb.Admin.Core.DTOs
         public DateTime? FechaTermino { get; set; }
         public string TipoNomina { get; set; } = string.Empty;
         public EmpleadoStatusType Estatus { get; set; } = EmpleadoStatusType.Ninguno;
+        public string UsuarioActualizacion { get; set; } = string.Empty;
+    }
+
+    public class EmpleadoFileDto
+    { 
+        public Guid ID { get; set; }
+        public EmpleadoFileType tipo { get; set; }
         public string UsuarioActualizacion { get; set; } = string.Empty;
     }
 

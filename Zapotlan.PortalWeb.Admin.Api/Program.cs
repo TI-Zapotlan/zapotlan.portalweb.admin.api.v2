@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Reflection;
 using System.Text.Json.Serialization;
+using Zapotlan.PortalWeb.Admin.Api.Interfaces;
+using Zapotlan.PortalWeb.Admin.Api.Services;
 using Zapotlan.PortalWeb.Admin.Core.Interfaces;
 using Zapotlan.PortalWeb.Admin.Core.Services;
 using Zapotlan.PortalWeb.Admin.Infrastructure.Data;
@@ -59,6 +61,7 @@ builder.Services.AddTransient<IEmpleadoMapping, EmpleadoMapping>();
 builder.Services.AddTransient<IPersonaService, PersonaService>();
 builder.Services.AddTransient<IPersonaMapping, PersonaMapping>();
 builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
+builder.Services.AddTransient<IFileUtilityService, FileUtilityService>();
 
 builder.Services.AddScoped(typeof(IRepository<>), typeof(BaseRepository<>));
 

@@ -28,4 +28,11 @@
         NombreDesc,
         FechaIngresoDesc
     }
+
+    public enum EmpleadoFileType
+    { 
+        Ninguno,
+        FotoPerfil,
+        CurriculumVitae
+    }
 }
