@@ -25,12 +25,14 @@ namespace Zapotlan.PortalWeb.Admin.Infrastructure.Mappings
                 var itemDto = new EmpleadoItemListDto {
                     ID = item.ID,
                     Codigo = item.Codigo,
+                    NombreAreaEGob = item.NombreAreaEGob,
                     NombrePuesto = item.NombrePuesto,
                     ArchivoFotografia = item.ArchivoFotografia,
                     ArchivoCV = item.ArchivoCV,
                     FechaIngreso = item.FechaIngreso,
                     FechaTermino = item.FechaTermino,
                     TipoNomina = item.TipoNomina,
+                    Sincronizable = item.Sincronizable,
                     Estatus = item.Estatus,
 
                     Prefijo = item.Persona != null 
@@ -66,12 +68,14 @@ namespace Zapotlan.PortalWeb.Admin.Infrastructure.Mappings
                 EmpleadoJefeID = item.EmpleadoJefeID,
                 PersonaID = item.PersonaID,
                 Codigo = item.Codigo,
+                NombreAreaEGob = item.NombreAreaEGob,
                 NombrePuesto = item.NombrePuesto,
                 ArchivoFotografia = item.ArchivoFotografia,
                 ArchivoCV = item.ArchivoCV,
                 FechaIngreso = item.FechaIngreso,
                 FechaTermino = item.FechaTermino,
                 TipoNomina = item.TipoNomina,
+                Sincronizable = item.Sincronizable,
                 Estatus = item.Estatus,
                 UsuarioActualizacion = item.UsuarioActualizacion,
                 FechaActualizacion = item.FechaActualizacion,
@@ -125,6 +129,7 @@ namespace Zapotlan.PortalWeb.Admin.Infrastructure.Mappings
                 FechaIngreso = itemDto.FechaIngreso,
                 FechaTermino = itemDto.FechaTermino,
                 TipoNomina = itemDto.TipoNomina,
+                Sincronizable = itemDto.Sincronizable,
                 Estatus = itemDto.Estatus,
                 UsuarioActualizacion = itemDto.UsuarioActualizacion
             };

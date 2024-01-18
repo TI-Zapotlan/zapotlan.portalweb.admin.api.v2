@@ -14,10 +14,32 @@ namespace Zapotlan.PortalWeb.Admin.Infrastructure.Repositories
 
         // METHODS
 
-        //public override IEnumerable<Persona> Gets()
-        //{
-        //    return _entity.AsEnumerable();
-        //}
+        public async Task<Persona?> FindByCURP(string curp)
+        { 
+            return await _entity
+                .Where(e => e.CURP != null && e.CURP.ToUpper() == curp.ToUpper())
+                .FirstOrDefaultAsync();
+        } // FindByCURP
+
+        public async Task<Persona?> FindByFullName(string nombres, string? primerApellido, string? segundoApellido)
+        {
+            nombres = nombres.ToUpper();
+            primerApellido = string.IsNullOrEmpty(primerApellido) ? "" : primerApellido.ToUpper();
+            segundoApellido = string.IsNullOrEmpty(segundoApellido) ? "" : segundoApellido.ToUpper();
+
+            return await _entity
+                .Where(e => ((e.Nombres != null && e.Nombres.ToUpper() == nombres)
+                    && (e.PrimerApellido.ToUpper() == primerApellido)
+                    && (e.SegundoApellido.ToUpper() == segundoApellido))
+                    || (primerApellido == "" 
+                        && e.Nombres != null && e.Nombres.ToUpper() == nombres
+                        && (e.SegundoApellido.ToUpper() == segundoApellido))
+                    || (segundoApellido == ""
+                        && e.Nombres != null && e.Nombres.ToUpper() == nombres
+                        && (e.PrimerApellido.ToUpper() == primerApellido))
+                )
+                .FirstOrDefaultAsync();
+        } // FindByFullName
 
         public async Task UpdateAsync(Persona item) {
             var currItem = await _entity.FindAsync(item.ID) ?? throw new BusinessException("No se encontró el registro a actualizar en la base de datos");

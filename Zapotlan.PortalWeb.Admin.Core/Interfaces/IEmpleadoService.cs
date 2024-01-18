@@ -15,5 +15,7 @@ namespace Zapotlan.PortalWeb.Admin.Core.Interfaces
         Task<Empleado> UpdateAsync(Empleado item);
 
         Task<bool> DeleteAsync(Empleado item);
+
+        Task<bool> SyncEmpleadosAsync(string url);
     }
 }

@@ -96,10 +96,22 @@ namespace Zapotlan.PortalWeb.Admin.Infrastructure.Repositories
         {
             var items = await _entity
                 .Where(e => 
-                    e.UsuarioActualizacion == username 
+                    (e.UsuarioActualizacion == username)
                     && e.Estatus == EmpleadoStatusType.Ninguno)
                 .ToListAsync();
             foreach(var item in items) 
+            {
+                _entity.Remove(item);
+            }
+        }
+
+        public async Task DeleteAllTmps()
+        {
+            var items = await _entity
+                .Where(e => e.Estatus == EmpleadoStatusType.Ninguno)
+                .ToListAsync();
+
+            foreach (var item in items)
             {
                 _entity.Remove(item);
             }
@@ -139,5 +151,15 @@ namespace Zapotlan.PortalWeb.Admin.Infrastructure.Repositories
 
             _entity.Update(cItem);
         }
+
+        public async Task SetAllEnSincronizacionStatus()
+        { 
+            var items = await _entity
+                .Where(e => e.Sincronizable != EmpleadoSincronizableType.NoSincronizar)
+                .ToListAsync();
+
+            items.ForEach(i => i.Estatus = EmpleadoStatusType.EnSincronizacion);
+        }
+
     }
 }

@@ -45,6 +45,9 @@ namespace Zapotlan.PortalWeb.Admin.Infrastructure.Validators
             RuleFor(i => i.TipoNomina)
                 .MaximumLength(100).WithMessage("El {PropertyName} no puede ser mayor a {MaxLength} caracteres");
 
+            RuleFor(i => i.Sincronizable)
+                .IsInEnum().WithMessage("El valor {PropertyValue} para {PropertyName} no es un valor válido");
+
             RuleFor(i => i.Estatus)
                 .IsInEnum().WithMessage("El valor {PropertyValue} para {PropertyName} no es un valor válido");
 

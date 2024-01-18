@@ -19,6 +19,11 @@ namespace Zapotlan.PortalWeb.Admin.Core.Interfaces
 
         Task DeleteTmpByUser(string username);
 
+        Task DeleteAllTmps();
+
         Task FileUpload(Guid id, string fileName, EmpleadoFileType type, string usuarioActualizacion);
+
+        Task SetAllEnSincronizacionStatus();
     }
 }
+ 

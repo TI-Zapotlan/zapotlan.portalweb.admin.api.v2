@@ -17,6 +17,9 @@ namespace Zapotlan.PortalWeb.Admin.Infrastructure.Data.Configurations
             builder.Property(e => e.Codigo)
                 .HasMaxLength(40);
 
+            builder.Property(e => e.NombreAreaEGob)
+                .HasMaxLength(100);
+
             builder.Property(e => e.NombrePuesto)
                 .HasMaxLength(200);
 

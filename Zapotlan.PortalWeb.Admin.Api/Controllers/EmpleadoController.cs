@@ -25,6 +25,7 @@ namespace Zapotlan.PortalWeb.Admin.Api.Controllers
         private readonly IEmpleadoService _empleadoService;
         private readonly IEmpleadoMapping _empleadoMapping;
         private readonly IFileUtilityService _fileUtilityService;
+        private readonly IConfiguration _configuration;
 
         // CONSTRUCTOR 
 
@@ -34,15 +35,18 @@ namespace Zapotlan.PortalWeb.Admin.Api.Controllers
         /// <param name="empleadoService">Servicios para la entidad de empleados</param>
         /// <param name="empleadoMapping">Para mapeo de clases de empleados</param>
         /// <param name="fileUtilityService">Manejo de archivos</param>
+        /// <param name="configuration">Acceso a los registros de configuración</param>
         public EmpleadoController(
             IEmpleadoService empleadoService,
             IEmpleadoMapping empleadoMapping,
-            IFileUtilityService fileUtilityService
+            IFileUtilityService fileUtilityService,
+            IConfiguration configuration
             )
         {
             _empleadoService = empleadoService;
             _empleadoMapping = empleadoMapping;
             _fileUtilityService = fileUtilityService;
+            _configuration = configuration;
         }
 
         // ENDPOINTS
@@ -182,14 +186,14 @@ namespace Zapotlan.PortalWeb.Admin.Api.Controllers
         public async Task<IActionResult> FileUpload(Guid id, IFormFile file, string username, EmpleadoFileType tipo)
         {
             var empleado = await _empleadoService.GetAsync(id);
-            var nombreArchivo = string.Empty;
 
             if (empleado == null)
             {
                 throw new BusinessException("No se encontró el registro con el identificador indicado: " + id.ToString());
             }
 
-            switch (tipo) 
+            string nombreArchivo;
+            switch (tipo)
             {
                 case EmpleadoFileType.FotoPerfil:
                     if (!IsFileValid(file, imagesFileSignatures))
@@ -199,7 +203,8 @@ namespace Zapotlan.PortalWeb.Admin.Api.Controllers
                     nombreArchivo = "FotoPerfil";
                     break;
                 case EmpleadoFileType.CurriculumVitae:
-                    if (!IsFileValid(file, pdfFileSignatures)) {
+                    if (!IsFileValid(file, pdfFileSignatures))
+                    {
                         throw new BusinessException("La extensión no es valida.");
                     }
                     nombreArchivo = "CurriculumVitae";
@@ -235,7 +240,25 @@ namespace Zapotlan.PortalWeb.Admin.Api.Controllers
                 // return BadRequest("Ha ocurrido una excepción: " + ex.Message);
                 throw new BusinessException("Ha ocurrido una excepción: " + ex.Message);
             }
-        }
+        } // FileUpload
+
+        /// <summary>
+        /// Sincroniza los empleados de EGobierno con los del Portal Web
+        /// </summary>
+        /// <returns></returns>
+        [Produces("application/json")]
+        [HttpGet("SyncWithEGobierno")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ApiResponse<bool>))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> SyncWithEGobierno()
+        {
+            var eGobiernoUrl = _configuration["EGobiernoApiUrl"] ?? string.Empty;
+
+            var result = await _empleadoService.SyncEmpleadosAsync(eGobiernoUrl + $"/empleado");
+            var response = new ApiResponse<bool>(result);
+
+            return Ok(response);
+        } // SyncWithEGobierno
 
         // METODOS PRIVADOS
 

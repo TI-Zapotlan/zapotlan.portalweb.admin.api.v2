@@ -7,7 +7,8 @@
         Licencia,
         Baja,
         Suspendido,
-        Eliminado
+        Eliminado,
+        EnSincronizacion
     }
 
     public enum EmpleadoFechaType
@@ -34,5 +35,12 @@
         Ninguno,
         FotoPerfil,
         CurriculumVitae
+    }
+
+    public enum EmpleadoSincronizableType
+    {
+        Ninguno,
+        Sincronizar,
+        NoSincronizar
     }
 }

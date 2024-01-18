@@ -9,12 +9,14 @@ namespace Zapotlan.PortalWeb.Admin.Core.Entities
         public Guid? PersonaID { get; set; }
 
         public string Codigo { get; set; } = string.Empty;
+        public string NombreAreaEGob { get; set; } = string.Empty;
         public string NombrePuesto { get; set; } = string.Empty;
         public string ArchivoFotografia { get; set; } = string.Empty;
         public string ArchivoCV { get; set; } = string.Empty;
         public DateTime? FechaIngreso { get; set; }
         public DateTime? FechaTermino { get; set; }
         public string TipoNomina { get; set; } = string.Empty;
+        public EmpleadoSincronizableType Sincronizable { get; set; }
         public EmpleadoStatusType Estatus { get; set; } = EmpleadoStatusType.Ninguno;
 
         // RELATIONS

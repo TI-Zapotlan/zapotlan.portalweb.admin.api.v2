@@ -1,4 +1,5 @@
 ﻿using Zapotlan.PortalWeb.Admin.Core.CustomEntities;
+using Zapotlan.PortalWeb.Admin.Core.DTOs;
 using Zapotlan.PortalWeb.Admin.Core.Entities;
 using Zapotlan.PortalWeb.Admin.Core.QueryFilters;
 

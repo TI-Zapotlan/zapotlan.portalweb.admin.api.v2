@@ -1,4 +1,6 @@
-﻿using Zapotlan.PortalWeb.Admin.Core.CustomEntities;
+﻿using System.Net.Http.Json;
+using Zapotlan.PortalWeb.Admin.Core.CustomEntities;
+using Zapotlan.PortalWeb.Admin.Core.DTOs;
 using Zapotlan.PortalWeb.Admin.Core.Entities;
 using Zapotlan.PortalWeb.Admin.Core.Enumerations;
 using Zapotlan.PortalWeb.Admin.Core.Exceptions;
@@ -42,9 +44,9 @@ namespace Zapotlan.PortalWeb.Admin.Core.Services
                 items = items.Where(i => 
                     i.Codigo.ToLower().Contains(filters.Texto)
                     || i.NombrePuesto.ToLower().Contains(filters.Texto)
-                    || (i.Persona.Nombres != null && i.Persona.Nombres.ToLower().Contains(filters.Texto))
-                    || (i.Persona.PrimerApellido != null && i.Persona.PrimerApellido.ToLower().Contains(filters.Texto))
-                    || (i.Persona.SegundoApellido != null && i.Persona.SegundoApellido.ToLower().Contains(filters.Texto))
+                    || (i.Persona != null && i.Persona.Nombres != null && i.Persona.Nombres.ToLower().Contains(filters.Texto))
+                    || (i.Persona != null && i.Persona.PrimerApellido != null && i.Persona.PrimerApellido.ToLower().Contains(filters.Texto))
+                    || (i.Persona != null && i.Persona.SegundoApellido != null && i.Persona.SegundoApellido.ToLower().Contains(filters.Texto))
                 );
             }
 
@@ -95,9 +97,9 @@ namespace Zapotlan.PortalWeb.Admin.Core.Services
                     items = items.OrderBy(i => i.Codigo);
                     break;
                 case EmpleadoOrderFilterType.Nombre:
-                    items = items.OrderBy(i => i.Persona.Nombres)
-                        .ThenBy(i => i.Persona.PrimerApellido)
-                        .ThenBy(i => i.Persona.SegundoApellido);
+                    items = items.OrderBy(i => i.Persona?.Nombres)
+                        .ThenBy(i => i.Persona?.PrimerApellido)
+                        .ThenBy(i => i.Persona?.SegundoApellido);
                     break;
                 case EmpleadoOrderFilterType.FechaIngreso:
                     items = items.OrderBy(i => i.FechaIngreso);
@@ -106,9 +108,9 @@ namespace Zapotlan.PortalWeb.Admin.Core.Services
                     items = items.OrderByDescending(i => i.Codigo);
                     break;
                 case EmpleadoOrderFilterType.NombreDesc:
-                    items = items.OrderByDescending(i => i.Persona.Nombres)
-                        .ThenByDescending(i => i.Persona.PrimerApellido)
-                        .ThenByDescending(i => i.Persona.SegundoApellido);
+                    items = items.OrderByDescending(i => i.Persona?.Nombres)
+                        .ThenByDescending(i => i.Persona?.PrimerApellido)
+                        .ThenByDescending(i => i.Persona?.SegundoApellido);
                     break;
                 case EmpleadoOrderFilterType.FechaIngresoDesc:
                     items = items.OrderByDescending(i => i.FechaIngreso);
@@ -197,6 +199,151 @@ namespace Zapotlan.PortalWeb.Admin.Core.Services
             await _unitOfWork.SaveChangesAsync();
 
             return true;
+        } // DeleteAsync
+
+        /// <summary>
+        /// Sincroniza los empleados de la base de datos de eGobierno con la del Portal Web
+        /// Ver: 
+        ///  - https://www.netmentor.es/entrada/implementar-httpclient
+        ///  - https://stackoverflow.com/questions/65383186/using-httpclient-getfromjsonasync-how-to-handle-httprequestexception-based-on
+        /// </summary>
+        /// <param name="url"></param>
+        /// <returns></returns>
+        /// <exception cref="BusinessException"></exception>
+        public async Task<bool> SyncEmpleadosAsync(string url)
+        {
+            var client = new HttpClient();
+            var result = await client.GetAsync(url);
+
+            if (!result.IsSuccessStatusCode)
+            {
+                string message = await result.Content.ReadAsStringAsync();
+                throw new BusinessException(message);
+            }
+
+            var empleadosEGob = await result.Content.ReadFromJsonAsync<EmpleadosEGobiernoDto>();
+
+            if (empleadosEGob != null && empleadosEGob.Data.Count > 0)
+            {
+                await _unitOfWork.EmpleadoRepository.DeleteAllTmps();
+                await _unitOfWork.EmpleadoRepository.SetAllEnSincronizacionStatus();
+                await _unitOfWork.SaveChangesAsync();
+
+                foreach (var empleadoEGob in empleadosEGob.Data)
+                {   
+                    Guid personaID;                    
+                    var empleado = await _unitOfWork.EmpleadoRepository.GetAsync(empleadoEGob.ID);
+
+                    //if (empleadoEGob.ID == new Guid("F4FFE051-8B06-4FEA-8CD5-6C5EFD250C02"))
+                    //{
+                    //    Console.Write("No recibe la Persona");
+                    //}
+
+                    // Validate empleado
+                    if (empleado == null)       // Empleado nuevo
+                    {
+                        personaID = await SyncPersonaWithEmpleadoEGobAsync(empleadoEGob);
+                        empleado = AsignEmpleadoValues(new Empleado(), empleadoEGob);
+                        empleado.ID = empleadoEGob.ID;
+                        empleado.PersonaID = personaID;
+                        // empleado.Estatus = personaID == null ? EmpleadoStatusType.EnSincronizacion : empleado.Estatus;
+
+                        await _unitOfWork.EmpleadoRepository.AddAsync(empleado);
+                    }
+                    else if(empleado.Sincronizable != EmpleadoSincronizableType.NoSincronizar) // Empleado existente y permite sincronizar
+                    {
+                        personaID = await SyncPersonaWithEmpleadoEGobAsync(empleadoEGob);
+                        empleado = AsignEmpleadoValues(empleado, empleadoEGob);
+                        empleado.PersonaID = personaID;
+
+                        await _unitOfWork.EmpleadoRepository.UpdateAsync(empleado);
+                    }
+                    await _unitOfWork.SaveChangesAsync();
+                }
+            }
+
+            // 1. Poner a todos los empleados en estatus de EnSincronizacion
+            // 2. Por cada Empleado en la consulta
+            //      1. Existe el Empleado
+            //          1. Actualizar sus datos
+            //          2. Actualizar los datos de la persona
+            //          3. Actualizar los datos de su área
+            //      2. No Existe
+            //          1. Existe Persona
+            //              1. Verificar que no este asociada con un empleado
+            //              2. Asociar con el empleado
+            //          2. No Existe Persona
+            //              1. Crear nueva persona
+            //              2. Asociar con el empleado
+            //          3. Actualizar datos del Empleado
+            //              1. Actualizar el estatus al actual
+            // 3. Ver que onda con todos los que no se sincronizaron (tal vez ponerlos de baja en automático)
+
+            return true;
         }
+
+        // PRIVATE 
+
+        private Empleado AsignEmpleadoValues(Empleado empleado, EmpleadoEGobiernoItemDto empleadoEGob) 
+        {
+            empleado.Codigo = empleadoEGob.Codigo ?? empleado.Codigo;
+            empleado.NombreAreaEGob = empleadoEGob.NombreArea ?? empleado.NombreAreaEGob;
+            empleado.NombrePuesto = empleadoEGob.NombrePuesto ?? empleado.NombrePuesto;
+            empleado.FechaIngreso = empleadoEGob.FechaIngreso ?? empleado.FechaIngreso;
+            empleado.TipoNomina = empleadoEGob.TipoNomina ?? empleado.TipoNomina;
+            empleado.Estatus = empleadoEGob.Estatus;
+            empleado.UsuarioActualizacion = "sync.proccess";
+            empleado.FechaActualizacion = DateTime.Now;
+
+            return empleado;
+        } // AsignEmpleadoValues
+
+        private async Task<Guid> SyncPersonaWithEmpleadoEGobAsync(EmpleadoEGobiernoItemDto item)
+        {
+            Persona? persona;
+
+            if (string.IsNullOrEmpty(item.CURP))
+            {
+                persona = await _unitOfWork.PersonaRepository.FindByFullName(
+                    item.Nombres,
+                    item.PrimerApellido,
+                    item.SegundoApellido);
+            }
+            else
+            { 
+                persona = await _unitOfWork.PersonaRepository.FindByCURP(item.CURP);
+            }
+
+            if (persona == null) // Persona nueva
+            {
+                persona = AsignPersonaValues(new Persona(), item);
+                persona.ID = item.PersonaID ?? Guid.NewGuid();
+
+                await _unitOfWork.PersonaRepository.AddAsync(persona);
+            }
+            else                // Persona existente
+            {
+                persona = AsignPersonaValues(persona, item);
+                await _unitOfWork.PersonaRepository.UpdateAsync(persona);
+            }
+
+            return persona.ID;
+        } // SyncPersonaWithEmpleadoEGobAsync
+
+        private Persona AsignPersonaValues(Persona persona, EmpleadoEGobiernoItemDto empleadoEGob)
+        {
+            persona.Prefijo = empleadoEGob.Prefijo;
+            persona.Nombres = empleadoEGob.Nombres;
+            persona.PrimerApellido = empleadoEGob.PrimerApellido;
+            persona.SegundoApellido = empleadoEGob.SegundoApellido;
+            persona.CURP = empleadoEGob.CURP;
+            persona.EstadoVida = PersonaEstadoVidaType.Vivo;
+            persona.Estatus = EstatusType.Activo;
+
+            persona.UsuarioActualizacion = "sync.proccess";
+            persona.FechaActualizacion = DateTime.Now;
+
+            return persona;
+        } // AsignPersonaValues
     }
 }
